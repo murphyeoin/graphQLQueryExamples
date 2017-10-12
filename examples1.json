@@ -1,4 +1,4 @@
-query types{ 
+query typesIntrospect{ 
   __schema {
       types {
         kind
@@ -8,9 +8,10 @@ query types{
   }
 }
 
----------------------------------------------------------------------------------------
 
-query RepoQuery {
+#---------------------------------------------------------------------------------------
+
+query RepoSchemaIntrospect {
 __type(name: "Repository") {
     name
     fields {
@@ -22,9 +23,37 @@ __type(name: "Repository") {
   }
 }
 
----------------------------------------------------------------------------------------
+#---------------------------------------
+query CommitIntrospect
+{
+  __type(name:"PullRequestCommit") {
+    fields {
+      name
+      description
+      isDeprecated
+      deprecationReason
+      type {
+        kind
+        name
+        description
+      }
+    }
+  }
+}
 
-query RepoQuery($typeName: String!) {
+#-----------------------------------
+
+query eoin {
+  user(login: "murphyeoin") {
+    email
+    name
+    avatarUrl
+  }
+}
+
+#---------------------------------------------------------------------------------------
+
+query RepoQueryWithVariable($typeName: String!) {
 __type(name: $typeName) {
     name
     fields {
@@ -38,7 +67,44 @@ __type(name: $typeName) {
 }
 
 { "typeName": "Repository"}
----------------------------------------------------------------------------------------
+
+#-----------------------------------------------------------
+query OpenIssuesOnUSDMaya {
+  repository(owner: "AnimalLogic", name: "AL_USDMaya") {
+    issues(last: 20, states: OPEN) {
+      edges {
+        node {
+          title
+          url
+          labels(first: 5) {
+            edges {
+              node {
+                name
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+#-----------------------------------------
+query repoListAlias {
+  viewer {
+    repositories(first:20) {
+      edges {
+        node {
+          theREpoName : name
+        }
+      }
+    }
+  }
+}
+
+#-----------------------------------------------
+
+#---------------------------------------------------------------------------------------
 
 query AutodeskRepos {
  repositoryOwner(login: "Autodesk") {
@@ -52,7 +118,7 @@ query AutodeskRepos {
   }
 }
 }
-------------------------------------------------------
+#------------------------------------------------------
 
 
 
@@ -86,6 +152,7 @@ query TeamMembersByOrganization($organization: String!, $team: String!) {
   }
 }
 
+#-------------------Fragment-------------------------
 
 
 fragment Dashboard on Query {
