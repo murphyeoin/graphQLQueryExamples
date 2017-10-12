@@ -1,0 +1,113 @@
+query types{ 
+  __schema {
+      types {
+        kind
+        name
+        description
+      }
+  }
+}
+
+---------------------------------------------------------------------------------------
+
+query RepoQuery {
+__type(name: "Repository") {
+    name
+    fields {
+      name
+      description
+      isDeprecated
+      deprecationReason
+    }
+  }
+}
+
+---------------------------------------------------------------------------------------
+
+query RepoQuery($typeName: String!) {
+__type(name: $typeName) {
+    name
+    fields {
+      name
+      description
+      isDeprecated
+      deprecationReason
+      
+    }
+  }
+}
+
+{ "typeName": "Repository"}
+---------------------------------------------------------------------------------------
+
+query AutodeskRepos {
+ repositoryOwner(login: "Autodesk") {
+  repositories(first:20) {
+    edges {
+      node {
+        name
+        description
+      }
+    }
+  }
+}
+}
+------------------------------------------------------
+
+
+
+query TeamMembersByOrganization($organization: String!, $team: String!) {
+  organization(login: $organization) {
+    teams(query: $team, first:20) {
+      edges {
+        node {
+          name
+          members(first: 20) {
+            edges {
+              node {
+                name
+                pullRequests(first: 20, states: OPEN) {
+                  edges {
+                    node {
+                      title
+                      createdAt
+                      id
+                      url
+                     
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+fragment Dashboard on Query {
+      organization(login: "AnimalLogic") {
+        teams(query: "R&D", first: 1) {
+          totalCount
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+          edges {
+            node {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+    
+query blah {
+  ...Dashboard
+}
+
+{"organization": "AnimalLogic", "team": "R&D"}
